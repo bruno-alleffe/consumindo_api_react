@@ -4,6 +4,7 @@ import Loading from '../layout/Loading'
 import Message from '../layout/Message'
 import Table from "../project/Table"
 import Modal from '../project/Modal'
+import Modal2 from '../project/Modal2'
 
 
 
@@ -67,7 +68,7 @@ function ListaContatos() {
                  setContatoMessage('')
             })
             .catch((err) => console.log(err)) 
-        }, 800);
+        }, 300);
         
     }
     
@@ -86,6 +87,7 @@ function ListaContatos() {
                 
             )}
             {removeLoading && <Table contatos={contatos} handleRemove={removerContato} />}
+            
         </section>
     )
 }

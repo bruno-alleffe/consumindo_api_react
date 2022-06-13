@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom'
 import { FaFirstOrderAlt } from "react-icons/fa";
+import ModalDeletar from './ModalDeletar';
+
+
 
 function Table({ contatos, handleRemove }) {
     
@@ -9,6 +12,11 @@ function Table({ contatos, handleRemove }) {
         const id = el.id
         handleRemove(id)
     }
+
+    // function formataData(data) {
+    //     let dataFormatada = (data.getFullYear() + "-" + ((data.getMonth() + 1)) + "-" + (data.getDate() )) ;
+    //     return dataFormatada
+    // }
     
     return (
         
@@ -56,11 +64,12 @@ function Table({ contatos, handleRemove }) {
                                 </td>
                                 
                                 <td className="px-6 py-4">
-                                    <p className="text-gray-500"> {contato.dataNascimento} </p>
+                                    <p className="text-gray-500"> { formataData(contato.dataNascimento) } </p>
                                 </td>
                                 <td className="px-1 py-4">
                                     <Link to={`/editarContato/${contato.id}`} className="mx-3 px-4 py-1 text-sm text-blue-600 bg-blue-200 rounded-full">Editar</Link>
-                                    <button onClick={remove} id={contato.id} className="px-4 py-1 text-sm text-red-400 bg-red-200 rounded-full">Deletar</button>
+                                <button onClick={remove} id={contato.id} className="px-4 py-1 text-sm text-red-400 bg-red-200 rounded-full">Deletar</button>
+                                <ModalDeletar id={contato.id} handleRemove={handleRemove}/>
                                 </td>
                             </tr>
                             
