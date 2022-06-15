@@ -12,7 +12,7 @@ function InserirContato() {
             contato.ativo = true
         }
 
-        fetch('https://api.box3.work/api/Contato/36092947-1c6d-4b24-856c-b31a4cebce82', {
+        fetch('https://api.box3.work/api/Contato/7259b70c-499e-49b7-8915-6a70f0b81f7f', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

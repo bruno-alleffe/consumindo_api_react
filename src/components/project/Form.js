@@ -11,7 +11,10 @@ function Form({ handleSubmit, contatoData, valorBotao, id }) {
         setContato(contatoData || {} )
     }, [contatoData])
     
-
+    function formataData(dataSemFormato) {
+        const dataForamtada = dataSemFormato.substr(0,10);
+        return dataForamtada
+    }
     
 
     const submit = (e) => {

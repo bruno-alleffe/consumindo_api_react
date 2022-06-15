@@ -1,10 +1,14 @@
 import { Link } from 'react-router-dom'
 import { FaFirstOrderAlt } from "react-icons/fa";
 import ModalDeletar from './ModalDeletar';
+import ModaliniciarChamada from './ModaliniciarChamada';
+import { PencilAlt, Phone, Photograph } from 'heroicons-react'
+import ModalChamada from './ModalChamada';
+import ModalHistoricoChamada from './ModalHistoricoChamada';
 
 
 
-function Table({ contatos, handleRemove }) {
+function Table({ contatos, handleRemove, }) {
     
     const remove = (e) => {
         e.preventDefault()
@@ -13,10 +17,11 @@ function Table({ contatos, handleRemove }) {
         handleRemove(id)
     }
 
-    // function formataData(data) {
-    //     let dataFormatada = (data.getFullYear() + "-" + ((data.getMonth() + 1)) + "-" + (data.getDate() )) ;
-    //     return dataFormatada
-    // }
+    function formataData(dataSemFormato) {
+        const data = new Date(dataSemFormato)
+        const dataFormatada = data.toLocaleDateString('pt-BR', {timeZone: 'UTC'})
+        return dataFormatada
+    }
     
     return (
         
@@ -59,7 +64,7 @@ function Table({ contatos, handleRemove }) {
                                 <td className="px-6 py-4">
                                     <p className="text-gray-500"> {contato.email} </p>
                                 </td>
-                                <td className="px-2 py-4 flex items-center justify-center">
+                                <td className="px-2 py-7 flex items-center justify-center">
                                     {contato.ativo === true ? <FaFirstOrderAlt className="text-green-500 text-center"></FaFirstOrderAlt> : <FaFirstOrderAlt className="text-red-500"></FaFirstOrderAlt>}
                                 </td>
                                 
@@ -67,9 +72,12 @@ function Table({ contatos, handleRemove }) {
                                     <p className="text-gray-500"> { formataData(contato.dataNascimento) } </p>
                                 </td>
                                 <td className="px-1 py-4">
-                                    <Link to={`/editarContato/${contato.id}`} className="mx-3 px-4 py-1 text-sm text-blue-600 bg-blue-200 rounded-full">Editar</Link>
-                                <button onClick={remove} id={contato.id} className="px-4 py-1 text-sm text-red-400 bg-red-200 rounded-full">Deletar</button>
-                                <ModalDeletar id={contato.id} handleRemove={handleRemove}/>
+                                    <div className='flex justify-center'>
+                                        <ModalChamada id={contato.id} handleRemove={handleRemove}/>
+                                        <ModalHistoricoChamada id={contato.id} handleRemove={handleRemove}/>
+                                        <Link to={`/editarContato/${contato.id}`} className="mx-2 px-0 py-1 text-sm text-blue-600 rounded-full"><PencilAlt className='h-6 w-6 text-blue-500 group-hover:text-blue-400'></PencilAlt></Link>
+                                        <ModalDeletar id={contato.id} handleRemove={handleRemove}/>
+                                    </div>
                                 </td>
                             </tr>
                             

@@ -10,7 +10,7 @@ function EditarContato() {
     
     const [contato, setContato] = useState([])
     useEffect(() => {
-        fetch(`https://api.box3.work/api/Contato/36092947-1c6d-4b24-856c-b31a4cebce82/${id}`, {
+        fetch(`https://api.box3.work/api/Contato/7259b70c-499e-49b7-8915-6a70f0b81f7f/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ function EditarContato() {
             contato.ativo = true
         }
 
-        fetch(`https://api.box3.work/api/Contato/36092947-1c6d-4b24-856c-b31a4cebce82/${id}`, {
+        fetch(`https://api.box3.work/api/Contato/7259b70c-499e-49b7-8915-6a70f0b81f7f/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

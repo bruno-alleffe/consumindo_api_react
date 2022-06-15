@@ -22,8 +22,8 @@ function ListaContatos() {
 
     const [contatos, setContatos] = useState([])
     useEffect(() => {
-        setTimeout(() => {
-            fetch('https://api.box3.work/api/Contato/36092947-1c6d-4b24-856c-b31a4cebce82', {
+        let id = setTimeout(() => {
+            fetch('https://api.box3.work/api/Contato/7259b70c-499e-49b7-8915-6a70f0b81f7f', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -32,14 +32,16 @@ function ListaContatos() {
             .then((resp) => resp.json())
             .then((data) => {
                 setContatos(data)
+                
                 setRemoveLoading(true)
             })
             .catch((err) => console.log(err)) 
         }, 800);
+        return () => clearTimeout(id)
     }, [])
     
     function removerContato(id) {
-        fetch(`https://api.box3.work/api/Contato/36092947-1c6d-4b24-856c-b31a4cebce82/${id}`, {
+        fetch(`https://api.box3.work/api/Contato/7259b70c-499e-49b7-8915-6a70f0b81f7f/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,8 +56,8 @@ function ListaContatos() {
         })
         .catch((err) => console.log(err))
         
-        setTimeout(() => {
-            fetch('https://api.box3.work/api/Contato/36092947-1c6d-4b24-856c-b31a4cebce82', {
+        let id2 = setTimeout(() => {
+            fetch('https://api.box3.work/api/Contato/7259b70c-499e-49b7-8915-6a70f0b81f7f', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -64,13 +66,16 @@ function ListaContatos() {
             .then((resp) => resp.json())
             .then((data) => {
                 setContatos(data)
+                console.log(contatos);
                 setRemoveLoading(true)
                  setContatoMessage('')
             })
             .catch((err) => console.log(err)) 
         }, 300);
+        return () => clearTimeout(id2)
         
     }
+    
     
     return (
         <section className='bg-gray-100 h-full'>
