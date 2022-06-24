@@ -16,7 +16,6 @@ function Form({ handleSubmit, contatoData, valorBotao, id }) {
         return dataForamtada
     }
     
-
     const submit = (e) => {
         e.preventDefault()
         // console.log(contato)
@@ -104,7 +103,7 @@ function Form({ handleSubmit, contatoData, valorBotao, id }) {
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
                             Data de Nascimento:
                         </label>
-                        <input value={contato.dataNascimento} onChange={handleChange} type="date" name="dataNascimento" id="dataNascimento" className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" aria-describedby="dataHelp" placeholder="dataNascimento" required />
+                        <input value={String(contato.dataNascimento).split("T")[0] || ''} onChange={handleChange} type="date" name="dataNascimento" id="dataNascimento" className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" aria-describedby="dataHelp" placeholder="dataNascimento" required />
                     </div>
                     <div className="flex items-center justify-between pt-4">
                         <Link

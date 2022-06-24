@@ -1,15 +1,30 @@
 import { Link } from 'react-router-dom'
 import { FaFirstOrderAlt } from "react-icons/fa";
 import ModalDeletar from './ModalDeletar';
-import ModaliniciarChamada from './ModaliniciarChamada';
+import { useEffect, useState } from 'react';
 import { PencilAlt, Phone, Photograph } from 'heroicons-react'
 import ModalChamada from './ModalChamada';
 import ModalHistoricoChamada from './ModalHistoricoChamada';
 
 
 
-function Table({ contatos, handleRemove, }) {
+function Table({ contatos, handleRemove, verificaChamada, atualizaTabela }) {
     
+    const [chamadaAndamento, setchamadaAndamento] = useState([])
+    useEffect(() => {
+        fetch('https://api.box3.work/api/Telefone/7259b70c-499e-49b7-8915-6a70f0b81f7f/chamada-em-andamento', {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          })
+          .then((resp) => resp.json())
+          .then((data) => {
+              setchamadaAndamento(data)
+              console.log("Verifica chamada");
+          })
+          .catch((err) => console.log(err))
+      }, [])
     const remove = (e) => {
         e.preventDefault()
         const el = e.target || e.srcElement
@@ -73,7 +88,7 @@ function Table({ contatos, handleRemove, }) {
                                 </td>
                                 <td className="px-1 py-4">
                                     <div className='flex justify-center'>
-                                        <ModalChamada id={contato.id} handleRemove={handleRemove}/>
+                                        <ModalChamada id={contato.id} handleRemove={handleRemove} verificaChamada={verificaChamada} atualizaTabela={atualizaTabela} chamadaEmAndamento={chamadaAndamento}/>
                                         <ModalHistoricoChamada id={contato.id} handleRemove={handleRemove}/>
                                         <Link to={`/editarContato/${contato.id}`} className="mx-2 px-0 py-1 text-sm text-blue-600 rounded-full"><PencilAlt className='h-6 w-6 text-blue-500 group-hover:text-blue-400'></PencilAlt></Link>
                                         <ModalDeletar id={contato.id} handleRemove={handleRemove}/>

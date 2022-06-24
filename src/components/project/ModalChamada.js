@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Modal from 'react-modal'
-import { Phone } from 'heroicons-react'
+import { Phone, X } from 'heroicons-react'
 
 
 const customStyles = {
@@ -16,11 +16,32 @@ const customStyles = {
 
 Modal.setAppElement('#root')
 
-function ModalChamada({handleRemove, id}) {
+function ModalChamada({handleRemove, id, verificaChamada, atualizaTabela, chamadaEmAndamento}) {
 
-  const [chamada, setChamada] = useState([])
- 
+    const [chamada, setChamada] = useState([])
+    // const [chamadaAndamento, setchamadaAndamento] = useState(verificaChamada || {})
+    const [chamadaAndamento, setchamadaAndamento] = useState([])
+    const [contatosm, setContatosm] = useState([])
+  
+    useEffect(() => {
+      setchamadaAndamento(chamadaEmAndamento)
+    }, [])
 
+    // useEffect(() => {
+    //   fetch('https://api.box3.work/api/Telefone/7259b70c-499e-49b7-8915-6a70f0b81f7f/chamada-em-andamento', {
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //     })
+    //     .then((resp) => resp.json())
+    //     .then((data) => {
+    //         setchamadaAndamento(data)
+    //         console.log(data);
+    //     })
+    //     .catch((err) => console.log(err))
+    // }, [])
+  
     let subtitle
     const [modalIsOpen, setIsOpen] = useState(false)
     const [time, setTime] = useState('')
@@ -30,110 +51,156 @@ function ModalChamada({handleRemove, id}) {
     var ss = 0
     let cron = 0
 
-    function openModal() {
-      setIsOpen(true)
+    function timer(min, seg) {
+      if(seg) {
+        ss = seg
+        mm = min
+      } 
+       cron = setInterval(() => {
+            
+            ss++; //Incrementa +1 na variável ss
       
+            if (ss == 59) { //Verifica se deu 59 segundos
+                ss = 0; //Volta os segundos para 0
+                mm++; //Adiciona +1 na variável mm
+      
+                if (mm == 59) { //Verifica se deu 59 minutos
+                    mm = 0;//Volta os minutos para 0
+                    hh++;//Adiciona +1 na variável hora
+                }
+            }
+      
+            //Cria uma variável com o valor tratado HH:MM:SS
+            // var format = (hh < 10 ? '0' + hh : hh) + ':' + (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss);
+            var format = (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss);
+            
+            //Insere o valor tratado no elemento counter
+            document.getElementById('timer').innerText = format;
+      
+            //Retorna o valor tratado
+            return format;
+        }, 1000);
+        setTime(cron)
+    }
 
-      let cron = setInterval(() => { 
-          ss++; //Incrementa +1 na variável ss
+    function openModal() {
+      if(chamadaEmAndamento.id && chamadaEmAndamento.contatoId === id) {
+        setIsOpen(true)
+        let dataInicio = new Date(chamadaEmAndamento.inicioAtendimento)
+        let data = new Date()
+        let milissegundos = (data - dataInicio)
+        let minn = parseInt((milissegundos/(1000*60))%60)
+        let segg = parseInt((milissegundos/1000)%60)
+        let min = Math.floor(minn)
+        let seg = Math.floor(segg)
+
+        console.log(milissegundos);
     
-          if (ss == 59) { //Verifica se deu 59 segundos
-              ss = 0; //Volta os segundos para 0
-              mm++; //Adiciona +1 na variável mm
-    
-              if (mm == 59) { //Verifica se deu 59 minutos
-                  mm = 0;//Volta os minutos para 0
-                  hh++;//Adiciona +1 na variável hora
-              }
-          }
-    
-          //Cria uma variável com o valor tratado HH:MM:SS
-          var format = (hh < 10 ? '0' + hh : hh) + ':' + (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss);
-          
-          //Insere o valor tratado no elemento counter
-          document.getElementById('timer').innerText = format;
-    
-          //Retorna o valor tratado
-          return format;
-      }, 1000);
-      setTime(cron)
-  
-      var dados = {
-        idContato: id
+        timer(min, seg)
       }
-      
-      var textoIdContato = `{"idContato": ${id}}`
-      var idContato = JSON.parse(textoIdContato)
+
+      if(!chamadaEmAndamento.id) {
+
+        setIsOpen(true)
+        
+        timer(0, 0)
+         
+        var idContato = {
+          idContato: id
+        }
 
         fetch("https://api.box3.work/api/Telefone/7259b70c-499e-49b7-8915-6a70f0b81f7f", {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
               },
-              body: JSON.stringify(dados),
+              body: JSON.stringify(idContato),
           })
-              .then((resp) => resp.json())
-              .then((data) => {
-                setChamada(data)
-                console.log("Iniciou a chamada", data);
-              })
-              .catch((err) => console.log(err))
- 
-      
+          .then((resp) => resp.json())
+          .then((data) => {
+            setchamadaAndamento(data)
+            console.log("Iniciou a chamada");
+          })
+          .catch((err) => console.log(err))
+      }
     }
   
     function afterOpenModal() {
       // references are now sync'd and can be accessed.
       subtitle.style.color = '#f00';
     }
+
+    function closeModal(params) {
+      setIsOpen(false)
+      atualizaTabela()
+      clearInterval(cron);
+      clearInterval(time);
+    }
   
-    function closeModal() {
+    function encerrarChamada() {
       setIsOpen(false)
 
-     
-      fetch('https://api.box3.work/api/Telefone/7259b70c-499e-49b7-8915-6a70f0b81f7f/chamada-em-andamento', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+      var assuntoChamada = document.getElementById('assuntoChamada').value
+      var assunto = {
+        assunto: `"${assuntoChamada}"`
+      }
+      
+      if(chamadaEmAndamento.id) {
+        fetch(`https://api.box3.work/api/Telefone/7259b70c-499e-49b7-8915-6a70f0b81f7f/${chamadaEmAndamento.id}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(assunto),
         })
         .then((resp) => resp.json())
         .then((data) => {
-            setChamada(data)
+          console.log("Encerrou a Chamada");
         })
         .catch((err) => console.log(err))
-        
-
-      var assuntoChamada = document.getElementById('assuntoChamada').value
-      var assunto = `{"assunto": "${assuntoChamada}"}`
-      var assuntoC = JSON.parse(assunto)
-
-      fetch(`https://api.box3.work/api/Telefone/7259b70c-499e-49b7-8915-6a70f0b81f7f/${chamada.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(assuntoC),
+      } else {
+        fetch(`https://api.box3.work/api/Telefone/7259b70c-499e-49b7-8915-6a70f0b81f7f/${chamadaAndamento.id}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(assunto),
         })
-            .then((resp) => resp.json())
-            .then((data) => {
-              console.log("Encerrou a Chamada", data);
-            })
-            .catch((err) => console.log(err))
+        .then((resp) => resp.json())
+        .then((data) => {
+          console.log("Encerrou a Chamada");
+        })
+        .catch((err) => console.log(err))
+      }
+     
+
+      
 
       clearInterval(cron);
-      clearInterval(time); 
+      clearInterval(time);
+      setChamada([])
+      setchamadaAndamento([])
+      atualizaTabela()
       hh = 0;
       mm = 0;
       ss = 0;
       document.getElementById('timer').innerText = '00:00:00';
+      
     }
     
     return (
         <div>
-            <button onClick={openModal} className='mx-1 px-0 py-1'>
-              <Phone className='h-6 w-6 text-green-500 group-hover:text-green-400'></Phone>
-            </button>
+            {chamadaEmAndamento.id && chamadaEmAndamento.contatoId === id || !chamadaEmAndamento.id ?
+              <button onClick={openModal} className='mx-1 px-0 py-1'>
+                <Phone className='h-6 w-6 text-green-500 group-hover:text-green-400'></Phone>
+              </button> 
+            :
+              <button className='mx-1 px-0 py-1'>
+                <X className='h-6 w-6 text-red-500 group-hover:text-red-400'></X>
+              </button>
+            }
+           
+
             <Modal
             isOpen={modalIsOpen}
             // onAfterOpen={afterOpenModal}
@@ -157,7 +224,7 @@ function ModalChamada({handleRemove, id}) {
                     rows="3"
                     placeholder="Sua mensagem..."
                   ></textarea>
-                  <button onClick={closeModal} data-modal-toggle="popup-modal" type="button" className="w-96 text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex flex justify-center items-center px-5 py-2.5 text-center">
+                  <button onClick={encerrarChamada} data-modal-toggle="popup-modal" type="button" className="w-96 text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex flex justify-center items-center px-5 py-2.5 text-center">
                     Encerrar chamada
                   </button>
                 </div>

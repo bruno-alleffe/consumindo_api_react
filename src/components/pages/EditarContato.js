@@ -38,7 +38,6 @@ function EditarContato() {
         })
             .then((resp) => resp.json())
             .then((data) => {
-                console.log(data)
                 setContato(data)
                 // Redirect
                 history.push('/', {message: 'Contato atualizado com sucesso!'})

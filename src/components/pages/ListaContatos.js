@@ -18,7 +18,7 @@ function ListaContatos() {
     if (location.state) {
         message = location.state.message
     }
-    
+
 
     const [contatos, setContatos] = useState([])
     useEffect(() => {
@@ -32,11 +32,10 @@ function ListaContatos() {
             .then((resp) => resp.json())
             .then((data) => {
                 setContatos(data)
-                
                 setRemoveLoading(true)
             })
             .catch((err) => console.log(err)) 
-        }, 800);
+        }, 500);
         return () => clearTimeout(id)
     }, [])
     
@@ -66,14 +65,34 @@ function ListaContatos() {
             .then((resp) => resp.json())
             .then((data) => {
                 setContatos(data)
-                console.log(contatos);
                 setRemoveLoading(true)
-                 setContatoMessage('')
+                setContatoMessage('')
             })
             .catch((err) => console.log(err)) 
-        }, 300);
+        }, 500);
         return () => clearTimeout(id2)
         
+    }
+
+    function atualizaTabela() {
+        setContatos([])
+        setRemoveLoading(false)
+        setTimeout(() => {
+            fetch('https://api.box3.work/api/Contato/7259b70c-499e-49b7-8915-6a70f0b81f7f', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((resp) => resp.json())
+            .then((data) => {
+                setContatos(data)
+                setRemoveLoading(true)
+                setContatoMessage('')
+            })
+            .catch((err) => console.log(err))
+        }, 500);
+
     }
     
     
@@ -91,7 +110,7 @@ function ListaContatos() {
                 
                 
             )}
-            {removeLoading && <Table contatos={contatos} handleRemove={removerContato} />}
+            {removeLoading && <Table contatos={contatos} handleRemove={removerContato} atualizaTabela={atualizaTabela}/>}
             
         </section>
     )

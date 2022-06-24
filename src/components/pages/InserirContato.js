@@ -21,7 +21,6 @@ function InserirContato() {
         })
             .then((resp) => resp.json())
             .then((data) => {
-                console.log(data)
                 // Redirect
                 history.push('/', {message: 'Contato adicionado com sucesso!'})
             })
